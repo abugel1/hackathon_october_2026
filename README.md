@@ -1,7 +1,7 @@
 # hackathon_october_2026
 
-QuizDeck is a computer science card-matching game for elementary learners, built
-with React and TanStack Start.
+Guess CS is a cute computer science matching game for elementary learners,
+built with React and TanStack Start.
 
 ## Getting started
 
@@ -11,6 +11,8 @@ Install dependencies and start the development server:
 npm install
 npm run dev
 ```
+
+Open [http://localhost:5173](http://localhost:5173) to play.
 
 ## Scripts
 

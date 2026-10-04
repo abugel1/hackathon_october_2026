@@ -10,7 +10,7 @@ import type {
 const DIFFICULTY_PAIRS: Record<Difficulty, number> = {
   easy: 3,
   medium: 6,
-  hard: 9,
+  hard: 8,
 };
 
 type CardT = { key: string; pairId: string; kind: "q" | "a" };
@@ -36,16 +36,16 @@ export function GameBoard({
   deck,
   mode,
   difficulty,
-  onQuit,
+  onRestart,
   onFinish,
 }: {
   deck: Deck;
   mode: GameMode;
   difficulty: Difficulty;
-  onQuit: () => void;
+  onRestart: () => void;
   onFinish: (result: GameResult) => void;
 }) {
-  // Difficulty sets the round length: easy 3 pairs, medium 6, hard 9.
+  // Difficulty sets the round length: easy 3 pairs, medium 6, hard 8.
   const activePairs = useMemo(
     () => deck.pairs.slice(0, DIFFICULTY_PAIRS[difficulty]),
     [deck, difficulty],
@@ -227,11 +227,6 @@ export function GameBoard({
     }
   };
 
-  const matchedPairs = matched.flatMap((id) => {
-    const p = pairById[id];
-    return p ? [p] : [];
-  });
-
   const renderCard = (card: CardT) => {
     const isMatched = matched.includes(card.pairId);
     const isFlipped = isMatched || flipped.includes(card.key);
@@ -243,15 +238,11 @@ export function GameBoard({
         <button
           key={card.key}
           onClick={() => handleCardClick(card)}
-          className={`group relative grid min-h-[215px] cursor-pointer place-items-center bg-glass-soft transition-all duration-200 hover:-translate-y-1 hover:bg-glass ${GLASS_CARD}`}
+          className={`matching-card matching-card-back group relative grid min-h-[215px] cursor-pointer place-items-center bg-glass-soft transition-all duration-200 hover:-translate-y-1 hover:bg-glass ${GLASS_CARD}`}
         >
-          <span className="absolute left-4 top-3.5 font-display text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/70">
-            Tap to flip
-          </span>
-          <span className="font-display text-5xl font-bold text-primary/30 transition-colors group-hover:text-primary/50">
+          <span className="matching-card-question" aria-hidden="true">
             ?
           </span>
-          <span className="absolute bottom-3.5 right-4 h-2 w-2 rounded-full bg-primary/20 transition-colors group-hover:bg-flare/60" />
         </button>
       );
     }
@@ -260,7 +251,7 @@ export function GameBoard({
       return (
         <div
           key={card.key}
-          className={`anim-pop relative flex min-h-[215px] flex-col justify-between bg-success/10 border-success/40 ${GLASS_CARD}`}
+          className={`matching-card matching-card-matched anim-pop relative flex min-h-[215px] flex-col justify-between bg-success/10 border-success/40 ${GLASS_CARD}`}
         >
           <div className="flex items-center justify-between">
             <span className="font-display text-[10px] font-bold uppercase tracking-[0.18em] text-success">
@@ -284,7 +275,7 @@ export function GameBoard({
       return (
         <div
           key={card.key}
-          className={`anim-flip relative flex min-h-[215px] flex-col justify-between bg-glass ${GLASS_CARD}`}
+          className={`matching-card matching-card-face anim-flip relative flex min-h-[215px] flex-col justify-between bg-glass ${GLASS_CARD}`}
         >
           <span className="font-display text-[10px] font-bold uppercase tracking-[0.18em] text-primary">
             Answer
@@ -305,7 +296,7 @@ export function GameBoard({
       return (
         <div
           key={card.key}
-          className={`anim-flip relative flex min-h-[215px] flex-col p-4 ${
+          className={`matching-card matching-card-face anim-flip relative flex min-h-[215px] flex-col p-4 ${
             isWrong
               ? "anim-shake border-flare/60 bg-flare/10"
               : "bg-glass border-glass-border"
@@ -333,7 +324,7 @@ export function GameBoard({
     return (
       <div
         key={card.key}
-        className={`anim-flip relative flex min-h-[215px] flex-col justify-between p-4 ${
+        className={`matching-card matching-card-face anim-flip relative flex min-h-[215px] flex-col justify-between p-4 ${
           isWrong
             ? "anim-shake border-flare/60 bg-flare/10"
             : "bg-glass border-glass-border"
@@ -442,118 +433,53 @@ export function GameBoard({
   }
 
   return (
-    <section className="grid grid-cols-1 gap-6 lg:grid-cols-[300px_1fr]">
-      {/* Sidebar */}
-      <aside
-        className={`flex flex-col gap-4 rounded-[28px] bg-panel p-6 shadow-[0_24px_70px_-24px_rgba(49,46,129,0.45)] backdrop-blur-2xl border border-glass-border`}
-      >
-        <div className="flex items-center justify-between">
-          <h2 className="font-display text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
-            Deck · {deck.title}
-          </h2>
-          <span className="font-display text-xs font-semibold text-muted-foreground">
-            {matched.length} of {totalPairs}
-          </span>
-        </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-glass-soft">
-          <div
-            className="h-full rounded-full bg-gradient-to-r from-primary to-flare transition-all duration-500"
-            style={{ width: `${(matched.length / totalPairs) * 100}%` }}
-          />
-        </div>
-
-        <div className="rounded-2xl border border-glass-border bg-glass p-4">
-          <div className="mb-1 flex justify-between font-display text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-            <span>Streak</span>
-            <span>×{streak}</span>
-          </div>
-          <p className="text-[13px] font-medium text-foreground">
-            {streak > 1
-              ? "Hot streak — +25 bonus pts per match"
-              : mode === "quiz"
-                ? "Answer correctly to build a streak"
-                : "Match a pair to build a streak"}
-          </p>
-        </div>
-
-        <div className="min-h-0 flex-1 space-y-2.5">
-          <p className="font-display text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-            Matched pairs
-          </p>
-          {matchedPairs.length === 0 ? (
-            <p className="text-[13px] font-medium text-muted-foreground">
-              None yet — flip a card to begin.
-            </p>
-          ) : (
-            matchedPairs.slice(-4).map((p) => (
-              <div
-                key={p.id}
-                className="rounded-2xl border border-success/30 bg-success/10 p-3"
-              >
-                <div className="mb-1 flex justify-between font-display text-[10px] font-bold uppercase tracking-widest text-success">
-                  <span>Matched</span>
-                  <span>✓</span>
-                </div>
-                <p className="text-[13px] font-medium text-foreground">
-                  {p.answer}
-                </p>
-              </div>
-            ))
-          )}
-        </div>
-
-        <div className="flex items-center gap-3 rounded-2xl border border-glass-border bg-glass-soft p-4">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary font-display text-sm font-bold text-primary-foreground">
-            A
-          </div>
-          <p className="text-[12px] font-medium leading-snug text-muted-foreground">
-            {mode === "quiz"
-              ? "Flip a question card, then tap “Answer this question” to open the multiple-choice round. Correct answers lock in the pair — no answer cards here."
-              : "Flip cards and pair each question with its answer card. Find two that belong together to lock in the pair."}
-          </p>
-        </div>
-      </aside>
-
-      {/* Board */}
-      <div>
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="rounded-full border border-glass-border bg-glass px-3.5 py-1.5 font-display text-xs font-bold text-foreground backdrop-blur-md">
-              {fmtTime(seconds)}
-            </span>
-            <span className="rounded-full border border-glass-border bg-glass px-3.5 py-1.5 font-display text-xs font-bold text-foreground backdrop-blur-md">
-              Moves {moves}
-            </span>
-            <div className="flex items-center gap-2 rounded-full border border-glass-border bg-glass px-3.5 py-1.5 font-display text-xs font-bold text-primary backdrop-blur-md">
-              <span className="h-2 w-2 rounded-full bg-flare" />
-              {score.toLocaleString()} pts
-            </div>
-          </div>
-          <button
-            onClick={onQuit}
-            className="rounded-full border border-glass-border bg-glass-soft px-4 py-1.5 font-display text-xs font-bold text-muted-foreground backdrop-blur-md transition hover:bg-glass hover:text-foreground"
-          >
-            Quit round
-          </button>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
-          {cards.map(renderCard)}
-        </div>
-
-        <p
-          className={`mt-5 min-h-6 font-display text-sm font-semibold transition-colors ${
-            feedback?.startsWith("Correct")
-              ? "text-success"
-              : feedback
-                ? "text-flare-deep"
-                : "text-transparent"
-          }`}
-          aria-live="polite"
-        >
-          {feedback ?? "·"}
+    <section className="matching-game">
+      <div className="matching-game-title">
+        <p className="matching-game-eyebrow">
+          A cute computer science challenge
+        </p>
+        <h1>
+          Guess CS <span aria-hidden="true">🌸</span>
+        </h1>
+        <p>
+          {mode === "classic"
+            ? `Flip two cards and find all ${totalPairs} matching pairs! ✨`
+            : `Answer all ${totalPairs} cute little questions! ✨`}
         </p>
       </div>
+
+      <div className="matching-game-toolbar">
+        <div className="matching-game-stat">
+          <span aria-hidden="true">⭐</span>
+          <span>Moves: {moves}</span>
+        </div>
+        <div className="matching-game-stat">
+          <span aria-hidden="true">💖</span>
+          <span>
+            Matches: {matched.length} / {totalPairs}
+          </span>
+        </div>
+        <div className="matching-game-actions">
+          <button type="button" onClick={onRestart}>
+            <span aria-hidden="true">🔄</span> Restart
+          </button>
+        </div>
+      </div>
+
+      <div className="matching-game-meta">
+        <span>⏱ {fmtTime(seconds)}</span>
+        <span>Score: {score.toLocaleString()}</span>
+        {streak > 1 && <span>🔥 Streak ×{streak}</span>}
+      </div>
+
+      <div className="matching-card-grid">{cards.map(renderCard)}</div>
+
+      <p className="matching-game-feedback" aria-live="polite">
+        {feedback ??
+          (mode === "classic"
+            ? "Pick two cards! 💕"
+            : "Flip a card to start! 💕")}
+      </p>
     </section>
   );
 }
