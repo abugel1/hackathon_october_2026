@@ -1,0 +1,229 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * QuizDeck design system — "Frosted glass study".
+ * Space Grotesk throughout, indigo primary, pink accent, glass surfaces.
+ */
+
+@theme inline {
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-flare: var(--flare);
+  --color-flare-deep: var(--flare-deep);
+  --color-success: var(--success);
+  --color-aqua: var(--aqua);
+  --color-glass: var(--glass);
+  --color-glass-soft: var(--glass-soft);
+  --color-glass-strong: var(--glass-strong);
+  --color-glass-border: var(--glass-border);
+  --color-panel: var(--panel);
+}
+
+:root {
+  --radius: 1rem;
+  --background: oklch(0.945 0.018 265);
+  --foreground: oklch(0.257 0.09 281.288);
+  --ink: oklch(0.257 0.09 281.288);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.257 0.09 281.288);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.257 0.09 281.288);
+  --primary: oklch(0.511 0.262 276.966);
+  --primary-foreground: oklch(0.985 0.002 286);
+  --secondary: oklch(0.955 0.012 265);
+  --secondary-foreground: oklch(0.372 0.044 257.287);
+  --muted: oklch(0.955 0.012 265);
+  --muted-foreground: oklch(0.554 0.046 257.417);
+  --accent: oklch(0.93 0.03 276);
+  --accent-foreground: oklch(0.372 0.044 257.287);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0.002 286);
+  --border: oklch(0.90 0.02 265);
+  --input: oklch(0.90 0.02 265);
+  --ring: oklch(0.511 0.262 276.966);
+  --flare: oklch(0.592 0.249 354);
+  --flare-deep: oklch(0.39 0.13 350);
+  --success: oklch(0.696 0.17 162.48);
+  --aqua: oklch(0.865 0.127 207.078);
+  --glass: oklch(1 0 0 / 0.42);
+  --glass-soft: oklch(1 0 0 / 0.2);
+  --glass-strong: oklch(1 0 0 / 0.62);
+  --glass-border: oklch(1 0 0 / 0.65);
+  --panel: oklch(1 0 0 / 0.22);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(1 0 0 / 0.22);
+  --sidebar-foreground: oklch(0.257 0.09 281.288);
+  --sidebar-primary: oklch(0.511 0.262 276.966);
+  --sidebar-primary-foreground: oklch(0.985 0.002 286);
+  --sidebar-accent: oklch(1 0 0 / 0.4);
+  --sidebar-accent-foreground: oklch(0.372 0.044 257.287);
+  --sidebar-border: oklch(1 0 0 / 0.6);
+  --sidebar-ring: oklch(0.511 0.262 276.966);
+}
+
+.dark {
+  --background: oklch(0.19 0.05 275);
+  --foreground: oklch(0.95 0.01 265);
+  --ink: oklch(0.95 0.01 265);
+  --card: oklch(0.24 0.06 275);
+  --card-foreground: oklch(0.95 0.01 265);
+  --popover: oklch(0.24 0.06 275);
+  --popover-foreground: oklch(0.95 0.01 265);
+  --primary: oklch(0.67 0.2 276.966);
+  --primary-foreground: oklch(0.2 0.05 275);
+  --secondary: oklch(0.28 0.05 272);
+  --secondary-foreground: oklch(0.95 0.01 265);
+  --muted: oklch(0.28 0.05 272);
+  --muted-foreground: oklch(0.72 0.03 265);
+  --accent: oklch(0.28 0.05 272);
+  --accent-foreground: oklch(0.95 0.01 265);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.95 0.01 265);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.67 0.2 276.966);
+  --flare: oklch(0.67 0.21 354);
+  --flare-deep: oklch(0.8 0.12 350);
+  --success: oklch(0.75 0.15 162.48);
+  --aqua: oklch(0.865 0.127 207.078);
+  --glass: oklch(1 0 0 / 0.08);
+  --glass-soft: oklch(1 0 0 / 0.05);
+  --glass-strong: oklch(1 0 0 / 0.14);
+  --glass-border: oklch(1 0 0 / 0.18);
+  --panel: oklch(1 0 0 / 0.06);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.24 0.06 275);
+  --sidebar-foreground: oklch(0.95 0.01 265);
+  --sidebar-primary: oklch(0.67 0.2 276.966);
+  --sidebar-primary-foreground: oklch(0.2 0.05 275);
+  --sidebar-accent: oklch(0.28 0.05 272);
+  --sidebar-accent-foreground: oklch(0.95 0.01 265);
+  --sidebar-border: oklch(1 0 0 / 12%);
+  --sidebar-ring: oklch(0.67 0.2 276.966);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Game animations */
+
+@keyframes card-flip {
+  from {
+    transform: perspective(900px) rotateY(82deg);
+    opacity: 0;
+  }
+  to {
+    transform: perspective(900px) rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes card-shake {
+  10%,
+  90% {
+    transform: translateX(-2px);
+  }
+  20%,
+  80% {
+    transform: translateX(4px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-6px);
+  }
+  40%,
+  60% {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes lock-pop {
+  0% {
+    transform: scale(0.94);
+  }
+  55% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes blob-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(50px, -35px) scale(1.08);
+  }
+}
+
+@utility anim-flip {
+  animation: card-flip 0.38s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@utility anim-shake {
+  animation: card-shake 0.5s ease both;
+}
+
+@utility anim-pop {
+  animation: lock-pop 0.45s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@utility blob {
+  animation: blob-drift 16s ease-in-out infinite;
+}
